@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Tabs, TabList, Tab } from 'react-tabs';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
+
 import { Loading, Owner, IssueList, Label } from './styles';
+import 'react-tabs/style/react-tabs.css';
 
 export default class Repository extends Component {
     static propTypes = {
@@ -32,7 +35,7 @@ export default class Repository extends Component {
             api.get(`/repos/${repoName}/issues`, {
                 params: {
                     state: 'open',
-                    per_page: 5,
+                    page: 1,
                 },
             }),
         ]);
@@ -42,9 +45,26 @@ export default class Repository extends Component {
             issues: issues.data,
             loading: false,
         });
-
-        console.log(issues);
     }
+
+    handleTab = async (index, lastIndex) => {
+        if (index !== lastIndex) {
+            let state = '';
+            if (index === 0) state = 'open';
+            else if (index === 1) state = 'closed';
+            else if (index === 2) state = 'all';
+
+            const { match } = this.props;
+
+            const repoName = decodeURIComponent(match.params.repository);
+
+            const response = await api.get(`/repos/${repoName}/issues`, {
+                params: { state },
+            });
+
+            this.setState({ issues: response.data });
+        }
+    };
 
     render() {
         const { repository, issues, loading } = this.state;
@@ -64,6 +84,13 @@ export default class Repository extends Component {
                     <h1>{repository.name}</h1>
                     <p>{repository.description}</p>
                 </Owner>
+                <Tabs onSelect={this.handleTab}>
+                    <TabList>
+                        <Tab>Abertas</Tab>
+                        <Tab>Fechadas</Tab>
+                        <Tab>Todas</Tab>
+                    </TabList>
+                </Tabs>
                 <IssueList>
                     {issues.map((issue) => (
                         <li key={String(issue.id)}>

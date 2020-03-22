@@ -14,6 +14,7 @@ export const Owner = styled.header`
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 30px;
 
     a {
         color: #7159c1;
@@ -44,8 +45,8 @@ export const Owner = styled.header`
 
 export const IssueList = styled.ul`
     padding-top: 30px;
-    margin-top: 30px;
-    border-top: 1px solid #eee;
+    /* margin-top: 30px;
+    border-top: 1px solid #eee; */
     list-style: none;
 
     li {
