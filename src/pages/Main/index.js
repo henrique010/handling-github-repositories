@@ -6,13 +6,15 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, InputSubmit } from './styles';
 
 export default class Main extends Component {
     state = {
         newRepo: '',
         repositories: [],
         loading: false,
+        error: false,
+        errorMessage: '',
     };
 
     componentDidMount() {
@@ -37,25 +39,57 @@ export default class Main extends Component {
     handleSubmit = async (event) => {
         event.preventDefault();
 
-        this.setState({ loading: true });
+        try {
+            this.setState({ loading: true });
 
-        const { newRepo, repositories } = this.state;
+            const { newRepo, repositories, error } = this.state;
 
-        const response = await api.get(`/repos/${newRepo}`);
+            const response = await api.get(`/repos/${newRepo}`);
 
-        const data = {
-            name: response.data.full_name,
-        };
+            const repositoryExists = repositories.find(
+                (repository) => repository.name === newRepo
+            );
 
-        this.setState({
-            repositories: [...repositories, data],
-            newRepo: '',
-            loading: false,
-        });
+            if (repositoryExists) {
+                this.setState({
+                    errorMessage: 'Repositório já foi adicionado',
+                });
+                throw new Error('Repositório duplicado');
+            }
+
+            const data = {
+                name: response.data.full_name,
+            };
+
+            this.setState({
+                repositories: [...repositories, data],
+                newRepo: '',
+                loading: false,
+                error: error && false,
+                errorMessage: error && '',
+            });
+        } catch (response) {
+            const { errorMessage } = this.state;
+            this.setState({
+                loading: false,
+                error: true,
+                newRepo: '',
+                errorMessage:
+                    errorMessage.length > 0
+                        ? errorMessage
+                        : 'Respositório não encontrado',
+            });
+        }
     };
 
     render() {
-        const { newRepo, repositories, loading } = this.state;
+        const {
+            newRepo,
+            repositories,
+            loading,
+            error,
+            errorMessage,
+        } = this.state;
         return (
             <Container>
                 <h1>
@@ -64,9 +98,10 @@ export default class Main extends Component {
                 </h1>
 
                 <Form onSubmit={this.handleSubmit}>
-                    <input
+                    <InputSubmit
+                        error={error}
+                        errorMessage={errorMessage}
                         type="text"
-                        placeholder="Adicionar respositório"
                         value={newRepo}
                         onChange={this.handleInputChange}
                     />

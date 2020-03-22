@@ -4,14 +4,6 @@ export const Form = styled.form`
     margin-top: 30px;
     display: flex;
     flex-direction: row;
-
-    input {
-        flex: 1;
-        border: 1px solid #eee;
-        padding: 10px 15px;
-        border-radius: 4px;
-        font-size: 16px;
-    }
 `;
 
 const rotate = keyframes`
@@ -71,4 +63,22 @@ export const List = styled.ul`
         color: #7159c1;
         text-decoration: none;
     }
+`;
+
+export const InputSubmit = styled.input.attrs((props) => ({
+    placeholder: props.error ? props.errorMessage : 'Adicionar respositório',
+}))`
+    flex: 1;
+    border: 1px solid ${(props) => (props.error ? 'red' : '#eee')};
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
+
+    ${(props) =>
+        props.error &&
+        css`
+            ::-webkit-input-placeholder {
+                color: red;
+            }
+        `}
 `;

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssueList } from './styles';
+import { Loading, Owner, IssueList, Label } from './styles';
 
 export default class Repository extends Component {
     static propTypes = {
@@ -42,6 +42,8 @@ export default class Repository extends Component {
             issues: issues.data,
             loading: false,
         });
+
+        console.log(issues);
     }
 
     render() {
@@ -73,7 +75,9 @@ export default class Repository extends Component {
                                 <strong>
                                     <a href={issue.html_url}>{issue.title}</a>
                                     {issue.labels.map((label) => (
-                                        <span>{label.name}</span>
+                                        <Label color={label.color}>
+                                            {label.name}
+                                        </Label>
                                     ))}
                                 </strong>
                                 <p>{issue.user.login}</p>
