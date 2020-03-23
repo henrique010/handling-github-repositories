@@ -7,16 +7,20 @@ import { Container, IndexButton } from './styles';
 export default class Pagination extends Component {
     static propTypes = {
         pageIndexes: PropTypes.shape([]).isRequired,
+        paginate: PropTypes.func.isRequired,
     };
 
     state = {
         indexSelected: 1,
     };
 
-    handleSelectedIndex = (index) => {
+    handleSelectedIndex = (newIndexSelected) => {
+        const { paginate } = this.props;
         this.setState({
-            indexSelected: index,
+            indexSelected: newIndexSelected,
         });
+
+        paginate(newIndexSelected);
     };
 
     render() {

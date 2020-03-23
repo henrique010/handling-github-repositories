@@ -81,6 +81,13 @@ export default class Repository extends Component {
         return pageNumbers;
     };
 
+    paginate = (indexSelected) => {
+        this.setState({
+            pageStart: indexSelected,
+            pageEnd: indexSelected * 5,
+        });
+    };
+
     render() {
         const {
             repository,
@@ -138,7 +145,10 @@ export default class Repository extends Component {
                         ))
                         .slice(pageEnd - 5, pageStart * 5)}
                 </IssueList>
-                <Pagination pageIndexes={pageIndexes} />
+                <Pagination
+                    pageIndexes={pageIndexes}
+                    paginate={this.paginate}
+                />
             </Container>
         );
     }
