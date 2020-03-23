@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
+import Pagination from '../../components/Pagination';
 
 import { Loading, Owner, IssueList, Label } from './styles';
 import 'react-tabs/style/react-tabs.css';
@@ -23,6 +24,9 @@ export default class Repository extends Component {
         repository: {},
         issues: [],
         loading: true,
+        pageStart: 1,
+        pageEnd: 5,
+        pageIndexes: [],
     };
 
     async componentDidMount() {
@@ -35,7 +39,6 @@ export default class Repository extends Component {
             api.get(`/repos/${repoName}/issues`, {
                 params: {
                     state: 'open',
-                    page: 1,
                 },
             }),
         ]);
@@ -44,10 +47,11 @@ export default class Repository extends Component {
             repository: repository.data,
             issues: issues.data,
             loading: false,
+            pageIndexes: this.handlePageNumbers(issues.data),
         });
     }
 
-    handleTab = async (index, lastIndex) => {
+    handleSelectedTab = async (index, lastIndex) => {
         if (index !== lastIndex) {
             let state = '';
             if (index === 0) state = 'open';
@@ -62,12 +66,30 @@ export default class Repository extends Component {
                 params: { state },
             });
 
-            this.setState({ issues: response.data });
+            this.setState({
+                issues: response.data,
+                pageIndexes: this.handlePageNumbers(response.data),
+            });
         }
     };
 
+    handlePageNumbers = (issues) => {
+        const pageNumbers = [];
+        for (let count = 1; count <= Math.ceil(issues.length / 5); count += 1) {
+            pageNumbers.push(count);
+        }
+        return pageNumbers;
+    };
+
     render() {
-        const { repository, issues, loading } = this.state;
+        const {
+            repository,
+            issues,
+            loading,
+            pageStart,
+            pageEnd,
+            pageIndexes,
+        } = this.state;
 
         if (loading) {
             return <Loading>Carregando</Loading>;
@@ -84,7 +106,7 @@ export default class Repository extends Component {
                     <h1>{repository.name}</h1>
                     <p>{repository.description}</p>
                 </Owner>
-                <Tabs onSelect={this.handleTab}>
+                <Tabs onSelect={this.handleSelectedTab}>
                     <TabList>
                         <Tab>Abertas</Tab>
                         <Tab>Fechadas</Tab>
@@ -92,26 +114,31 @@ export default class Repository extends Component {
                     </TabList>
                 </Tabs>
                 <IssueList>
-                    {issues.map((issue) => (
-                        <li key={String(issue.id)}>
-                            <img
-                                src={issue.user.avatar_url}
-                                alt={issue.user.login}
-                            />
-                            <div>
-                                <strong>
-                                    <a href={issue.html_url}>{issue.title}</a>
-                                    {issue.labels.map((label) => (
-                                        <Label color={label.color}>
-                                            {label.name}
-                                        </Label>
-                                    ))}
-                                </strong>
-                                <p>{issue.user.login}</p>
-                            </div>
-                        </li>
-                    ))}
+                    {issues
+                        .map((issue) => (
+                            <li key={String(issue.id)}>
+                                <img
+                                    src={issue.user.avatar_url}
+                                    alt={issue.user.login}
+                                />
+                                <div>
+                                    <strong>
+                                        <a href={issue.html_url}>
+                                            {issue.title}
+                                        </a>
+                                        {issue.labels.map((label) => (
+                                            <Label color={label.color}>
+                                                {label.name}
+                                            </Label>
+                                        ))}
+                                    </strong>
+                                    <p>{issue.user.login}</p>
+                                </div>
+                            </li>
+                        ))
+                        .slice(pageEnd - 5, pageStart * 5)}
                 </IssueList>
+                <Pagination pageIndexes={pageIndexes} />
             </Container>
         );
     }
