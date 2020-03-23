@@ -54,7 +54,8 @@ export default class Main extends Component {
                 this.setState({
                     errorMessage: 'Repositório já foi adicionado',
                 });
-                throw new Error('Repositório duplicado');
+
+                throw new Error();
             }
 
             const data = {

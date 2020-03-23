@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FaSpinner } from 'react-icons/fa';
 
 import { Tabs, TabList, Tab } from 'react-tabs';
 import PropTypes from 'prop-types';
@@ -24,8 +25,8 @@ export default class Repository extends Component {
         repository: {},
         issues: [],
         loading: true,
-        pageStart: 1,
-        pageEnd: 5,
+        issueStart: 1,
+        issueEnd: 5,
         pageIndexes: [],
     };
 
@@ -83,8 +84,8 @@ export default class Repository extends Component {
 
     paginate = (indexSelected) => {
         this.setState({
-            pageStart: indexSelected,
-            pageEnd: indexSelected * 5,
+            issueStart: indexSelected,
+            issueEnd: indexSelected * 5,
         });
     };
 
@@ -93,13 +94,18 @@ export default class Repository extends Component {
             repository,
             issues,
             loading,
-            pageStart,
-            pageEnd,
+            issueStart,
+            issueEnd,
             pageIndexes,
         } = this.state;
 
         if (loading) {
-            return <Loading>Carregando</Loading>;
+            return (
+                <Loading>
+                    <FaSpinner size={24} color="#fff" />
+                    Carregando
+                </Loading>
+            );
         }
 
         return (
@@ -143,7 +149,7 @@ export default class Repository extends Component {
                                 </div>
                             </li>
                         ))
-                        .slice(pageEnd - 5, pageStart * 5)}
+                        .slice(issueEnd - 5, issueStart * 5)}
                 </IssueList>
                 <Pagination
                     pageIndexes={pageIndexes}

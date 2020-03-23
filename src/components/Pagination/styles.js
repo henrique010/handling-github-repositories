@@ -4,6 +4,7 @@ export const Container = styled.ul`
     list-style: none;
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
     margin-top: 8px;
     flex-wrap: wrap;
@@ -18,14 +19,19 @@ export const IndexButton = styled.button.attrs({
 })`
     padding: 8px;
     width: 40px;
+    height: 40px;
+    border-radius: 50%;
     background: #eee;
-    border: 1px solid #ddd;
+    font-weight: 600;
+    border: 1px solid #fff;
 
     ${(props) =>
         props.selected
             ? css`
                   background: #7159c1;
                   color: #fff;
+                  width: 44px;
+                  height: 44px;
               `
             : css`
                   background: #eee;
