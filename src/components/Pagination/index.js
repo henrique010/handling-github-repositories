@@ -6,7 +6,7 @@ import { Container, IndexButton } from './styles';
 
 export default class Pagination extends Component {
     static propTypes = {
-        pageIndexes: PropTypes.shape([]).isRequired,
+        pageIndexes: PropTypes.array.isRequired,
         paginate: PropTypes.func.isRequired,
     };
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSpinner } from 'react-icons/fa';
 
-import { Tabs, TabList, Tab } from 'react-tabs';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 
@@ -125,6 +125,9 @@ export default class Repository extends Component {
                         <Tab>Fechadas</Tab>
                         <Tab>Todas</Tab>
                     </TabList>
+                    <TabPanel />
+                    <TabPanel />
+                    <TabPanel />
                 </Tabs>
                 <IssueList>
                     {issues
@@ -140,7 +143,10 @@ export default class Repository extends Component {
                                             {issue.title}
                                         </a>
                                         {issue.labels.map((label) => (
-                                            <Label color={label.color}>
+                                            <Label
+                                                key={label.id}
+                                                color={label.color}
+                                            >
                                                 {label.name}
                                             </Label>
                                         ))}

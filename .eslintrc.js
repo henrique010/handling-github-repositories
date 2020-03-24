@@ -34,5 +34,6 @@ module.exports = {
       'react/prefer-stateless-function': 'off',
       'react/state-in-constructor': 'off',
       'react/static-property-placement': 'off',
+      'react/forbid-prop-types': 'off',
   },
 };

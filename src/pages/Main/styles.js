@@ -78,6 +78,7 @@ export const InputSubmit = styled.input.attrs((props) => ({
         props.error &&
         css`
             ::-webkit-input-placeholder {
+                border-color: red;
                 color: red;
             }
         `}

@@ -55,7 +55,7 @@ export default class Main extends Component {
                     errorMessage: 'Repositório já foi adicionado',
                 });
 
-                throw new Error();
+                throw new Error('Repositório duplicado');
             }
 
             const data = {
@@ -107,7 +107,7 @@ export default class Main extends Component {
                         onChange={this.handleInputChange}
                     />
 
-                    <SubmitButton disa loading={loading}>
+                    <SubmitButton loading={loading}>
                         {loading ? (
                             <FaSpinner color="#fff" size={14} />
                         ) : (
